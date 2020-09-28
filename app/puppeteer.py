@@ -30,7 +30,7 @@ class PuppeteerApp:
                  face_detector,
                  landmark_locator,
                  video_capture,
-                 torch_device: torch.device):
+                 torch_device: torch.device("cpu")):
         self.master = master
         self.poser = poser
         self.face_detector = face_detector
@@ -45,7 +45,7 @@ class PuppeteerApp:
         top_frame = Frame(self.master)
         top_frame.pack()
 
-        if True:
+        if False:
             source_image_frame = Frame(top_frame, width=256, height=256)
             source_image_frame.pack_propagate(0)
             source_image_frame.pack(side=LEFT)
@@ -53,7 +53,7 @@ class PuppeteerApp:
             self.source_image_label = Label(source_image_frame, text="Nothing yet!")
             self.source_image_label.pack(fill=BOTH, expand=True)
 
-        if True:
+        if False:
             control_frame = Frame(top_frame, width=256, height=192)
             control_frame.pack_propagate(0)
             control_frame.pack(side=LEFT)
@@ -90,6 +90,7 @@ class PuppeteerApp:
             initialdir="data/illust")
         if len(file_name) > 0:
             self.load_image_from_file(file_name)
+            self.load_source_image_button.pack_forget()
 
     def load_image_from_file(self, file_name):
         image = PhotoImage(file=file_name)
@@ -97,9 +98,9 @@ class PuppeteerApp:
             message = "The loaded image has size %dx%d, but we require %dx%d." \
                       % (image.width(), image.height(), self.poser.image_size(), self.poser.image_size())
             messagebox.showerror("Wrong image size!", message)
-        self.source_image_label.configure(image=image, text="")
-        self.source_image_label.image = image
-        self.source_image_label.pack()
+        #self.source_image_label.configure(image=image, text="")
+        #self.source_image_label.image = image
+        #self.source_image_label.pack()
 
         self.source_image = extract_pytorch_image_from_filelike(file_name).to(self.torch_device).unsqueeze(dim=0)
 
@@ -121,9 +122,9 @@ class PuppeteerApp:
         resized_frame = cv2.flip(cv2.resize(rgb_frame, (192, 256)), 1)
         pil_image = PIL.Image.fromarray(resized_frame, mode='RGB')
         photo_image = PIL.ImageTk.PhotoImage(image=pil_image)
-        self.video_capture_label.configure(image=photo_image, text="")
-        self.video_capture_label.image = photo_image
-        self.video_capture_label.pack()
+        #self.video_capture_label.configure(image=photo_image, text="")
+        #self.video_capture_label.image = photo_image
+        #self.video_capture_label.pack()
 
         if euler_angles is not None and self.source_image is not None:
             self.current_pose = torch.zeros(self.pose_size, device=self.torch_device)
