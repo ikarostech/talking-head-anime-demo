@@ -37,3 +37,7 @@ build/
 */out/*
 *.pyc
 **/.cache/*
+
+# pyinstaller
+*.pyo
+puppeteer.exe
